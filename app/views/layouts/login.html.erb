@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>S3 File Manager</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+   
+  </head>
+
+  <body class="animsition" >
+    <!--<p class="navbar-text float-right">
+    <% if user_signed_in? %>
+      Logged in as <strong><%= current_user.email %></strong>.
+      <%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %> |
+      <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+    <% else %>
+      <%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> |
+      <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>
+    <% end %>
+    </p>-->
+    <%= yield %>
+    <!-- jQuery -->
+    <script src="<%= root_url %>assets/jquery-3.2.1.min.js"></script>
+    <!-- popper  -->
+    <script src="<%= root_url %>assets/popper.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="<%= root_url %>assets/bootstrap.min.js"></script>
+    <!-- wow-->
+    <script src="<%= root_url %>assets/wow.min.js"></script>
+    <!-- main -->
+    <script src="<%= root_url %>assets/main.js"></script>
+
+    
+  </body>
+</html>
