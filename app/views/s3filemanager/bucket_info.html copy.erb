@@ -1,0 +1,85 @@
+
+<div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <%= render "shared/mob_header_sidebar" %>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <%= render "shared/sidebar" %>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <%= render "shared/header" %>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <% if notice %>
+                            <div class="col-sm-12">
+                            <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                                <%= notice %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            </div>
+                        <% end %>
+                        <% if  flash[:error] %>
+                            <div class="col-sm-12">
+                            <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                                <%= flash[:error] %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            </div>
+                        <% end %>
+                        <div class="table-data__tool">
+                                
+                                <div class="table-data__tool-right">
+                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <i class="zmdi zmdi-plus"></i>Add </button>
+                                    
+                                </div>
+                        </div>
+                        <div class="table-responsive m-b-40">
+                                    <table class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Size</th>
+                                                <th>Last Modified</th>
+                                                
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% @objFileFolder.each do | value| %>
+                                                <tr>
+                                                    <td><i class="fas fa-file"> </i>  <%= value[:name] %> </td>
+                                                    <td><%= value[:type] %> </td>
+                                                    <td><% if value[:size] %> <%= value[:size] %> kb <% end %></td>
+                                                    <td><%= value[:date].strftime('%b %d, %Y,   %H:%M:%S') %></td>
+                                                    
+                                                </tr>
+                                            <% end %>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                        
+
+                        <%= render "shared/footer" %>
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+
+    </div>

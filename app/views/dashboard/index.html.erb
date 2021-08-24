@@ -18,7 +18,26 @@
             <div class="main-content">
                 <div class="section__content section__content--p30">
                     <div class="container-fluid">
-                        
+                        <% if notice %>
+            <div class="col-sm-12">
+              <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                <%= notice %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          <% end %>
+          <% if  flash[:error] %>
+            <div class="col-sm-12">
+              <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                <%= flash[:error] %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <% end %>
                         <%= render "shared/footer" %>
                     </div>
                 </div>

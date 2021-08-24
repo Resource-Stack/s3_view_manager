@@ -5,22 +5,31 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    
+    
+    <!-- Fontfaces CSS-->
+    
+    <link href="<%= root_url %>assets/css/font-face.css" rel="stylesheet" media="all">
+    <link href="<%= root_url %>assets/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="<%= root_url %>assets/vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="<%= root_url %>assets/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-   
+     <!-- Bootstrap CSS-->
+    <link href="<%= root_url %>assets/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+    
+    <!-- Hamburgers CSS--> 
+    <link href="<%= root_url %>assets/vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    
+    <!-- Main CSS-->
+    <link href="<%= root_url %>assets/css/theme.css" rel="stylesheet" media="all">
+    <%# stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+   <style>
+   .fade{opacity:1}
+   </style>
   </head>
 
   <body class="animsition" >
-    <!--<p class="navbar-text float-right">
-    <% if user_signed_in? %>
-      Logged in as <strong><%= current_user.email %></strong>.
-      <%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %> |
-      <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-    <% else %>
-      <%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> |
-      <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>
-    <% end %>
-    </p>-->
+    
     <%= yield %>
     <!-- jQuery -->
     <script src="<%= root_url %>assets/jquery-3.2.1.min.js"></script>

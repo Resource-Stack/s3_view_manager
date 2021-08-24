@@ -1,0 +1,96 @@
+<table style="max-width:670px;margin:50px auto 10px;background-color:#fff;padding:50px;border-radius:3px;border-top:solid 10px #FCEA2E">
+    <thead>
+        <tr>
+            <th style="text-align:left">
+                <img src="https://ci4.googleusercontent.com/proxy/ipvSVZr4JI040FUX_WDe_tt20skgtJMofKtiTeMo10qm8ZBSyVMSNJ-ETxoxbQ-tuv9Y_XjS5toEmgHtCmFYsEf7PyImA_U6IbJ2ivs=s0-d-e1-ft#http://localhost/ezymd/public/public/images/large-logo.jpg" alt="TSOP" style="width:125px" class="CToWUd">
+            </th>
+            <th></th>
+            <th style="text-align:right;font-weight:400">
+                <h2 style="text-align:right;font-weight:200;font-size:2.5rem;color:#FCEA2E">Invoice</h2>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3" style="height:20px"></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;width:33.3%">
+                <p style="font-size:15px;margin:0">
+                    Hello, <strong>{{$invoiceData->orderData['username']}}</strong><br />
+                    Thank you for your order.
+                    
+                </p>
+            </td>
+            <td style="text-align:left;width:33.3%"></td>
+            <td style="text-align:right;width:33.3%">
+                <span style="font-weight:200;text-transform:uppercase;letter-spacing:1.5px;font-size:0.8em">Order
+                    {{$invoiceData->order_id}}</span><br>
+                <p style="font-size:15px;margin:0"><?php echo date("F d, Y"); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height:18px"></td>
+        </tr>
+        <tr>
+
+            <th colspan="1" style="text-align:left;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <span style="font-weight:600;font-size:14px;padding:10px 10px 0px 0px">Item</span>
+            </th>
+            <th colspan="1" style="text-align:left;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <strong style="font-weight:600;font-size:14px;padding:10px 0px 0px 0px">Qty</strong>
+            </th>
+            <th colspan="1" style="text-align:right;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <strong style="font-weight:600;font-size:14px;padding:10px 0px 0px 0px">Price</strong>
+            </th>
+            
+        </tr>
+        @if($invoiceData->orderData['order_items'])
+        @foreach($invoiceData->orderData['order_items'] as $order_items)
+        <tr>
+
+            <td colspan="1" style="text-align:left;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <span style="font-weight:200;font-size:14px;padding:10px 10px 0px 0px">{{$order_items['item']}}</span>
+            </td>
+            <td colspan="1" style="text-align:left;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <strong style="font-weight:200;font-size:14px;padding:10px 0px 0px 0px">{{$order_items['qty']}}</strong>
+            </td>
+            <td colspan="1" style="text-align:right;padding:5px 20px 5px 0px;border-bottom:1px solid #ccc">
+                <strong style="font-weight:200;font-size:14px;padding:10px 0px 0px 0px">{{$order_items['price']}}</strong>
+            </td>
+            
+        </tr>
+        @endforeach
+        @endif
+        <tr>
+
+            <td colspan="3" style="text-align:right;padding-right:20px">
+                <span style="font-weight:200;font-size:14px;padding:10px 10px 0px 0px">Total:</span>
+                <strong style="font-weight:200;font-size:14px;padding:10px 0px 0px 0px">${{ number_format($invoiceData->orderData['total'],2) }}</strong><br>
+                
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="width:100%;padding:0px;vertical-align:top">
+                <p style="margin:0 0 10px 0;padding:0;font-size:14px"> Payment Options:
+                    <strong style="text-transform:capitalize">{{$invoiceData->orderData['payment_type']}}</strong></p>
+
+
+            </td>
+
+        </tr>
+        
+    </tbody>
+    <tbody><tr><td><u></u>
+        </td></tr><tr>
+            <td colspan="2" style="font-size:14px;padding:50px 15px 0 0px">
+                <p style="margin:0 0 10px 0;padding:0;font-size:14px">
+                    <strong style="display:block;margin:0 0 10px 0">Thank you for using our ezymd
+                        application.</strong> <br>
+                    Any comments or suggestions should be directed to <a href="mailto:info@ezymd.com" target="_blank"> Ezymd Team. </a>
+                </p>
+            </td>
+        </tr>
+    <tr><td><u></u>
+</td></tr></tbody></table>

@@ -1,0 +1,51 @@
+
+<div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <%= render "shared/mob_header_sidebar" %>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <%= render "shared/sidebar" %>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <%= render "shared/header" %>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+             <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                <%= form_for :s3, url: post_add_file_path, method: :post do |f|%>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Document</label>
+                                <input type="hidden" name="s3[bucket]" value="<%= @bucket %>" >
+                                <input type="hidden" name="s3[id]" value="<%= @id %>" >
+                                <input type="hidden" name="s3[key]" value="<%= @key%>" >
+                                <%= f.file_field :doc ,class: 'form-control' ,placeholder: '' %>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-dot-circle-o"></i> Submit
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                <%end%>
+            </div>
+            </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+</div>
