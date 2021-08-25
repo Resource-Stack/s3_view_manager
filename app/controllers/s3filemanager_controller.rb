@@ -66,9 +66,8 @@ class S3filemanagerController < ApplicationController
     end
 
     def bucket_info()
-        
         bucket_name =  params[:bucket];
-        
+        obj_key=""
         id= params[:id]
         @key=params[:id]
         bucketObj = Aws::S3::Resource.new.bucket(bucket_name)
@@ -86,24 +85,33 @@ class S3filemanagerController < ApplicationController
             level=params[:id].split('-lb-').last
             @objFileFolder=getnLevelFileFolder(bucket_name,id,level.to_i+1)
             #render plain: @objFileFolder.inspect
-            if @objFileFolder.empty?
-                return redirect_to "#{download_obj_file_path(bucket_name)}?key=#{id}"
+            if @objFileFolder.empty? && id.last!="/"
+                permission=checkPermissionAjax(bucket_name, id,'read')
+                #render plain:permission['status'].inspect
+                if permission['status']!=false
+                    download_file(bucket_name,id)
+                else
+                    flash[:error]= permission['message']
+                    return redirect_back(fallback_location: bucket_list_path)
+                end
+                #redirect_to "#{download_obj_file_path(bucket_name)}?key=#{id}"
             end
         end
         @objFileFolder
         
         @bucket_name=bucket_name
-       
+        checkPermission(bucket_name)
 
     end
 
     def download_obj_file()
-
+        
         bucket=params[:bucket]
         key=params[:key]
         filename= params[:key].split("/").last
-        #render plain: key.inspect 
-        localPath="/var/www/html/storage/download/#{filename}"
+        
+        localPath="#{Rails.public_path}/downloads/#{filename}"
+        
         bucketObj = Aws::S3::Resource.new.bucket(bucket)
         sourceObj = bucketObj.object(key)
         sourceObj.get(response_target: localPath)
@@ -120,6 +128,9 @@ class S3filemanagerController < ApplicationController
         if !@id.nil? && @id!="/"
             @key=@id.split('-lb-').first
         end
+        #render plain: @key.inspect
+        checkPermission(@bucket, @key,'write')
+        
     end
     def post_add_file()
         if params[:s3][:doc].present?
@@ -148,9 +159,47 @@ class S3filemanagerController < ApplicationController
             #return redirect_to "#{get_bucket_info_path}/#{bucket}?id=#{params[:s3][:id]}"
         end
     end
+    def delete_obj()
+        bucket=params[:bucket]
+        key=params[:key]
+        if !key.nil? && key!="/"
+            key=key.split('-lb-').first
+        end
+        permission=checkPermissionAjax(bucket, key,'delete')
+
+        if permission['status']==true
+            S3_BUCKET.delete_object({
+                bucket: bucket, 
+                key: key, 
+            })
+            
+            flash[:notice] = "Document deleted successfully!"
+            return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:id]
+        else
+            flash[:error]= permission['message']
+            return redirect_back(fallback_location: bucket_list_path)
+        end
+        
+        rescue StandardError => e
+                    flash[:error] = e.message
+                    return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:id]
+    end        
+        
 
     private
+        
+        def download_file(bucket,key)
+             
+            filename= key.split("/").last
+            localPath="#{Rails.public_path}/downloads/#{filename}"
+            bucketObj = Aws::S3::Resource.new.bucket(bucket)
+            sourceObj = bucketObj.object(key)
+            sourceObj.get(response_target: localPath)
+            #byebug
+            send_file localPath
 
+
+        end
         def upload_file_to_folder(s3_client, bucket_name, folder_name, file_name)
             s3_client.put_object(
             body: file_name,

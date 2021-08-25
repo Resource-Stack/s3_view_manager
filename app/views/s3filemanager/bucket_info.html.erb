@@ -58,6 +58,7 @@
                                                 <th>Type</th>
                                                 <th>Size</th>
                                                 <th>Last Modified</th>
+                                                <th>Action</th>
                                                 
                                                 
                                             </tr>
@@ -69,7 +70,13 @@
                                                     <td><%= value[:type] %> </td>
                                                     <td><% if value[:size] %> <%= ((value[:size].to_f)/1024).round(1) %> kb <% end %></td>
                                                     <td><%= value[:date].strftime('%b %d, %Y,   %H:%M:%S') %></td>
-                                                    
+                                                    <td>
+                                                        <a href="<%= delete_obj_path(@bucket_name) %>?key=<%= value[:id] %>"  onclick="return confirm('Are you sure?')" >
+                                                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+                                                                    <i class="zmdi zmdi-delete"></i>
+                                                                </button>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             <% end %>
                                             
