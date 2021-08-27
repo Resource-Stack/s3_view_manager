@@ -47,6 +47,12 @@
                                 </div>
                         </div>-->
                         <div class="table-responsive m-b-40">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item" aria-current="page"> <i class="fas fa-home"> Home</i></li>
+                                           
+                                        </ol>
+                                    </nav>
                                     <table class="table table-borderless table-data3">
                                         <thead>
                                             <tr>
@@ -63,17 +69,17 @@
                                                     <td><%= value.creation_date.strftime('%b %d, %Y') %></td>
                                                     <td>
                                                         <div class="table-data-feature">
-                                                            <a  target="_blank"href="<%= get_bucket_info_path(value.name) %>">
+                                                            <a href="<%= get_bucket_info_path(value.name) %>">
                                                                 <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
                                                                     <i class="zmdi zmdi-eye"></i>
                                                                 </button>
                                                             </a>
                                                             &nbsp;
-                                                            <a href="#">
+                                                            <!--<a href="#">
                                                                 <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
                                                                     <i class="zmdi zmdi-delete"></i>
                                                                 </button>
-                                                            </a>
+                                                            </a>-->
                                                             
                                                         </div>
                                                     </td>

@@ -84,7 +84,7 @@ class S3filemanagerController < ApplicationController
             
             level=params[:id].split('-lb-').last
             @objFileFolder=getnLevelFileFolder(bucket_name,id,level.to_i+1)
-            #render plain: @objFileFolder.inspect
+            #render plain: id.inspect
             if @objFileFolder.empty? && id.last!="/"
                 permission=checkPermissionAjax(bucket_name, id,'read')
                 #render plain:permission['status'].inspect
@@ -98,7 +98,7 @@ class S3filemanagerController < ApplicationController
             end
         end
         @objFileFolder
-        
+        @folder_key=id
         @bucket_name=bucket_name
         checkPermission(bucket_name)
 
@@ -133,6 +133,21 @@ class S3filemanagerController < ApplicationController
         
     end
     def post_add_file()
+
+        if params[:s3][:folder].present?
+            bucket=params[:s3][:bucket]
+            folder_name=params[:s3][:key]
+            doc_anme= "#{params[:s3][:folder]}/"
+            objSuccess=upload_file_to_folder(S3_BUCKET,bucket,folder_name,doc_anme)
+            #render plain: objSuccess.inspect
+            if objSuccess== true
+                flash[:notice] = "Folder created successfully!"
+                return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:s3][:id]
+            else
+                flash[:error] = objSuccess
+                return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:s3][:id]
+            end
+        end
         if params[:s3][:doc].present?
             file_header = params[:s3][:doc]
             doc_anme  = file_header.original_filename
@@ -143,9 +158,9 @@ class S3filemanagerController < ApplicationController
             File.open(Rails.root.join('public','uploads', doc_anme), 'wb') do |f|
                 f.write(file_header.read)
             end
+            
             bucket=params[:s3][:bucket]
             folder_name=params[:s3][:key]
-            
             objSuccess=upload_file_to_folder(S3_BUCKET,bucket,folder_name,doc_anme)
             #render plain: objSuccess.inspect
             if objSuccess== true

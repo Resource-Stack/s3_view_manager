@@ -38,19 +38,64 @@
                             </div>
                             </div>
                         <% end %>
+                        
+                        <%
+                            arrLists=[]
+                            arrLists << "<li class='breadcrumb-item' > <a href='#{bucket_list_path}'><i class='fas fa-home'> Home</i> </a></li>";
+                            if !params[:bucket].nil?
+                                if !params[:id].nil?
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  <a href='#{get_bucket_info_path(params[:bucket])}'>#{params[:bucket]} </a></li>";
+                                else
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  #{params[:bucket]} </li>";
+                                end
+                            end
+                            if !params[:id].nil? &&  !params[:id].empty?
+                                strKeys=params[:id].split('-lb-').first
+                                label=params[:id].split('-lb-').last 
+                                arrKeys=strKeys.split('/')
+                                arrKeys.size
+                                preKeys=''
+                                i=1
+                                arrKeys.each do | key |
+                                preKeys="#{preKeys}#{key}/"
+
+                                keyurl="#{get_bucket_info_path(params[:bucket])}?id=#{preKeys}-lb-#{i.to_i}"
+                                if arrKeys.size!=i
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  <a href='#{keyurl}'>#{key} </a></li>";
+                                else
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  #{key} </li>";
+                                end
+                                i=i+1
+                                end
+
+                                
+                            end
+                
+                        %>
+                        <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <% arrLists.each do |list|%>
+                                                <%= sanitize list %>
+                                            <%end%>
+                                           
+                                        </ol>
+                                    </nav>
                         <div class="table-data__tool">
                                 
                                 <div class="table-data__tool-right">
                                     <a href="<%= add_file_path %>?bucket=<%=@bucket_name %>&key=<%=@key %>">
                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                        <i class="zmdi zmdi-plus"></i>Add </button> 
+                                        <i class="zmdi zmdi-plus"></i>Add File </button> 
                                         
                                     </a>
-                                    
+                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small"  data-toggle="modal" data-target="#createFolder">
+                                        <i class="zmdi zmdi-plus"></i>Add Folder </button> 
                                 </div>
+
+                                
                         </div>
                         <div class="table-responsive m-b-40">
-
+                                    
                                     <table class="table table-borderless table-data3">
                                         <thead>
                                             <tr>
@@ -93,4 +138,40 @@
             <!-- END PAGE CONTAINER-->
         </div>
 
+
+            
+    </div>
+
+
+    <div class="modal fade" id="createFolder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+             <%= form_for :s3, url: post_add_file_path, method: :post do |f|%>
+                <div class="modal-body">
+                    
+                    <input type="hidden" name="s3[bucket]" value="<%= @bucket_name %>" >
+                                    <input type="hidden" name="s3[id]" value="<%= @key %>" >
+                                    <input type="hidden" name="s3[key]" value="<%= @folder_key%>" >
+                                    <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Folder</label>
+                                    
+                                    <%= f.text_field :folder ,class: 'form-control' ,placeholder: '' %>
+                                </div>
+                            </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            <%end%>
+            </div>
+        </div>
     </div>
