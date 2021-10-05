@@ -62,3 +62,10 @@ gem 'aws-sdk'
 gem 'file-manager'
 
 gem 'dotenv-rails', groups: [:development, :test]
+
+gem 'delayed_job_active_record'
+
+gem 'redis'
+gem 'sidekiq'
+gem 'sidekiq-cron'
+

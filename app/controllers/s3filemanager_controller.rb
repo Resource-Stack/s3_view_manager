@@ -53,10 +53,39 @@ class S3filemanagerController < ApplicationController
     layout :resolve_layout
     # List of all buckets
     def index
-        @buckets = S3_BUCKET.list_buckets.buckets
-       
+        @buckets = S3Bucket.all
+        #render plain: @buckets.inspect
     end
+    def edit
+        @bucket_id=params[:bucket_id]
+        @bucket = S3Bucket.find(@bucket_id)
+        @userall= User.where(:is_admin=>0)
+        @users=[]
+        @userall.each do |user|
+            @users<< [user.name, user.id]
+        end
+        @selected_user= [1,2]
 
+    end
+    def update
+        if params[:s3][:users].present?
+            #render plain:  params.inspect  
+            objUser=[]
+            params[:s3][:users].each do | user |
+                objUser << UserPermission.create(user_id:user,s3_id:params[:s3][:bucket_id],authorization_level:"")
+            end
+            #render plain:objUser.inspect
+            if objUser[0].id.present?
+                flash[:notice] = "Bucket updated successfully!"
+                return redirect_to bucket_list_path
+            else
+                flash[:error] = "Not updated successfully!"
+                return redirect_to bucket_list_path
+            end
+         
+            
+        end
+    end
 
    
 
@@ -151,8 +180,7 @@ class S3filemanagerController < ApplicationController
         if params[:s3][:doc].present?
             file_header = params[:s3][:doc]
             doc_anme  = file_header.original_filename
-            #doc_anme  =  File.basename(params[:s3][:doc])
-            #render plain: doc_anme.inspect
+            FileUtils.mkdir_p "#{Rails.public_path}/uploads/"
             path_to_file_header= "#{Rails.public_path}/uploads/#{doc_anme}"
             File.delete(path_to_file_header) if File.exist?(path_to_file_header) # delete old image
             File.open(Rails.root.join('public','uploads', doc_anme), 'wb') do |f|
@@ -161,8 +189,9 @@ class S3filemanagerController < ApplicationController
             
             bucket=params[:s3][:bucket]
             folder_name=params[:s3][:key]
+            
             objSuccess=upload_file_to_folder(S3_BUCKET,bucket,folder_name,doc_anme)
-            #render plain: objSuccess.inspect
+           
             if objSuccess== true
                 flash[:notice] = "Document uploaded successfully!"
                 return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:s3][:id]
@@ -171,7 +200,7 @@ class S3filemanagerController < ApplicationController
                 return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:s3][:id]
             end
             
-            #return redirect_to "#{get_bucket_info_path}/#{bucket}?id=#{params[:s3][:id]}"
+            
         end
     end
     def delete_obj()
@@ -199,20 +228,28 @@ class S3filemanagerController < ApplicationController
                     flash[:error] = e.message
                     return redirect_to controller: 's3filemanager', action: 'bucket_info', bucket: bucket, id: params[:id]
     end        
-        
+    def deleteFolderContent 
+        folder_name= params[:folder]
+        if !folder_name.empty?
+            folder_path= "#{Rails.public_path}/#{folder_name}/"
+            FileUtils.remove_entry(folder_path,:secure=>true)
+        end 
+        render plain: folder_name.inspect
+
+    end
 
     private
         
         def download_file(bucket,key)
              
             filename= key.split("/").last
+            FileUtils.mkdir_p "#{Rails.public_path}/downloads/"
             localPath="#{Rails.public_path}/downloads/#{filename}"
             bucketObj = Aws::S3::Resource.new.bucket(bucket)
             sourceObj = bucketObj.object(key)
             sourceObj.get(response_target: localPath)
-            #byebug
             send_file localPath
-
+           
 
         end
         def upload_file_to_folder(s3_client, bucket_name, folder_name, file_name)
@@ -221,6 +258,7 @@ class S3filemanagerController < ApplicationController
             bucket: bucket_name,
             key: folder_name + file_name
             )
+            
             return true
             rescue StandardError => e
                 return  e.message
@@ -283,5 +321,7 @@ class S3filemanagerController < ApplicationController
             end
              return s3Objects
         end
+
+        
 
 end

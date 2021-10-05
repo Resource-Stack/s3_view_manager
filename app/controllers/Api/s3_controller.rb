@@ -52,6 +52,11 @@ class  Api::S3Controller < ApplicationController
         }
     end
 
+    def saveS3Bucketlist()
+        @buckets = S3_BUCKET.list_buckets
+       return render json: @buckets
+    end
+
     def folders
         bucket_name =  params[:bucket];
         fileobjects = S3_BUCKET.list_objects_v2(
