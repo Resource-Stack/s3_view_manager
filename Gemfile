@@ -69,3 +69,4 @@ gem 'redis'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 
+gem 'bcrypt', '~> 3.1.7'

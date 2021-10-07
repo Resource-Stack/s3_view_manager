@@ -8,6 +8,33 @@ class ApplicationController < ActionController::Base
         bucket_list_path
     end
     def checkPermission(buket_name, obj_key=nil,permission_acc=nil)
+        arrBucket=S3Bucket.where(name:buket_name ).first
+        if current_user.is_admin==false
+            arrData=  UserPermission.where(user_id: current_user.id,s3_id:arrBucket.id).first
+            if arrData.nil?
+                flash[:error] = "You are not authrised user!"
+                #return redirect_to bucket_list_path
+                return redirect_back(fallback_location: bucket_list_path)
+            end
+        end
+    end 
+    
+    def checkPermissionAjax(buket_name, obj_key=nil,permission_acc=nil)
+        #current_user
+        arrBucket=S3Bucket.where(name:buket_name ).first
+
+        dataRes={"message"=>"","status"=>true}
+        if current_user.is_admin==false
+            arrData=  UserPermission.where(user_id: current_user.id,s3_id:arrBucket.id).first
+            if arrData.nil?
+                
+                dataRes ={"message"=>"You are not authrised user!","status"=>false}
+            end
+        end
+        return dataRes
+    
+    end
+    def checkPermissionB(buket_name, obj_key=nil,permission_acc=nil)
         #current_user
         if current_user.is_admin==false
             arrData=  UserPermission.where(user_id: current_user.id).first
@@ -46,7 +73,7 @@ class ApplicationController < ActionController::Base
     
     end
 
-    def checkPermissionAjax(buket_name, obj_key=nil,permission_acc=nil)
+    def checkPermissionAjaxB(buket_name, obj_key=nil,permission_acc=nil)
         #current_user
         dataRes={"message"=>"","status"=>true}
         if current_user.is_admin==false

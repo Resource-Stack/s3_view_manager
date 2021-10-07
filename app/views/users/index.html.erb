@@ -1,0 +1,125 @@
+
+    <div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <%= render "shared/mob_header_sidebar" %>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <%= render "shared/sidebar" %>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <%= render "shared/header" %>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <% if notice %>
+                            <div class="col-sm-12">
+                            <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                                <%= notice %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            </div>
+                        <% end %>
+                        <% if  flash[:error] %>
+                            <div class="col-sm-12">
+                            <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                                <%= flash[:error] %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            </div>
+                        <% end %>
+                        <div class="table-data__tool">
+                                
+                                <div class="table-data__tool-right">
+                                   <a href="<%=new_user_path %>"> <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <i class="zmdi zmdi-plus"></i>Add User </button></a>
+                                    
+                                </div>
+                        </div>
+                        <div class="table-responsive m-b-40">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item" > <a href='<%= bucket_list_path %>'><i class="fas fa-home"> Home</i></a></li>
+                                           <li class='breadcrumb-item' aria-current='page'> Users  </li>
+                                        </ol>
+                                    </nav>
+                                    <table class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                            
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Created</th>
+                                                <th>Action</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <% @users.each do |user| %>
+                                                <tr>
+                                                    <td><%= user.name %></td>
+                                                    <td><%= user.email %></td>
+                                                    <td><%= user.phone %></td>
+                                                    <td><%= user.created_at.strftime('%b %d, %Y') %></td>
+                                                    <td class="action">
+                                                    <%= link_to edit_user_path(user), :class => "button" do %>
+                                                        <button type="button" class="btn btn-block btn-primary btn-sm">Edit</button>
+                                                    <% end  %>
+                                                    <% if user.status?%>
+                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
+                                                        <button type="button" class="btn btn-block btn-danger btn-sm">Deactivate</button>
+                                                        <% end %>
+                                                    <% else %>
+                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
+                                                        <button type="button" class="btn btn-block btn-success btn-sm">Activate</button>
+                                                        <% end %>
+                                                    <% end %>
+                                                    <%=button_to "delete", {:controller => :users,
+                                                                            :action => 'destroy', :id => user.id }, :class => "btn btn-block btn-danger btn-sm", :method => :delete %>
+                                                    </td>
+                                                </tr>
+                                            <% end %>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                        
+
+                        <%= render "shared/footer" %>
+                        <style>
+                           .action a{
+                                float:left;
+                                 margin-right:5px;
+                            }
+                            .action form{
+                               float:left;
+                            }
+                        </style>
+                        <script>
+                            $(function () {
+                            $("#users_table").DataTable({
+                                "responsive": true, "lengthChange": false, "autoWidth": false,
+                            
+                            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                            
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+
+    </div>

@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   
   devise_for :users, controllers: { sessions: 'users/sessions' }
   root 'dashboard#index'
+  resources :users
+  post '/user_create', to: 'users#create', as: 'user_create'
+  get '/change_status_user/:id' => 'users#change_status', as: 'change_status_user'
   devise_scope :user do
     #root 'dashboard#index'
     namespace :api do

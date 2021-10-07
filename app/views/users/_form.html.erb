@@ -1,0 +1,72 @@
+<div class="col-lg-12">
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="card">
+    <div class="card-header">
+      <strong> <% if action_name=='new' %> New User <% else %> Edit User <% end %> </strong>
+    </div>
+    <div class="card-body card-block">
+      <%= form_for [@user] do |form| %>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="text-input" class=" form-control-label">Name </label></div>
+          <div class="col-12 col-md-9">
+            <%= form.text_field :name ,class: 'form-control' ,placeholder: 'Enter Name' %>
+            <small class="form-text form-tex">Please enter your name</small>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Email</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.text_field :email,class: 'form-control' , placeholder: 'Enter Email'  %>
+            <small class="help-block form-text">Please enter your email</small>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Phone</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.text_field :phone, class: 'form-control' , placeholder: 'Enter Phone'  %>
+            <small class="help-block form-text">Please enter your phone</small>
+          </div>
+        </div>
+        
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">User Type</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.select(:is_admin, [['Select', ' '],['Admin', true], ['User', false]] ,{},{ :class => 'form-control'} ) %>
+            <small class="help-block form-text">Please enter your password</small>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Password</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.password_field :password,  class: 'form-control' , placeholder: 'Enter Password'  %>
+            <small class="help-block form-text">Please enter your password</small>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Confirm Password</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.password_field :password_confirmation,  class: 'form-control' , placeholder: 'Confirm Password'  %>
+            <small class="help-block form-text">Please enter your password again</small>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa fa-dot-circle-o"></i> Submit
+          </button>
+          <a href="<%= users_url %>" class="btn btn-secondary btn-sm">
+            <i class="fa  fa-step-backward"></i> Back
+          </a>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

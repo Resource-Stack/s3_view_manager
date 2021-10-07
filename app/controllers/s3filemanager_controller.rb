@@ -53,8 +53,15 @@ class S3filemanagerController < ApplicationController
     layout :resolve_layout
     # List of all buckets
     def index
+        
         @buckets = S3Bucket.all
-        #render plain: @buckets.inspect
+        arrBucketids= UserPermission.where(user_id: current_user.id).pluck(:s3_id)
+        
+        if(current_user.is_admin!=true)
+            @buckets= S3Bucket.where(id: arrBucketids) 
+        end
+        
+        #render plain: arrBucketids.inspect
     end
     def edit
         @bucket_id=params[:bucket_id]
@@ -64,15 +71,16 @@ class S3filemanagerController < ApplicationController
         @userall.each do |user|
             @users<< [user.name, user.id]
         end
-        @selected_user= [1,2]
-
+        @selected_user= UserPermission.where(s3_id: @bucket_id).pluck(:user_id)
+        #render plain: @selected_user.inspect
     end
     def update
         if params[:s3][:users].present?
             #render plain:  params.inspect  
             objUser=[]
+            UserPermission.where(:s3_id => params[:s3][:bucket_id]).destroy_all
             params[:s3][:users].each do | user |
-                objUser << UserPermission.create(user_id:user,s3_id:params[:s3][:bucket_id],authorization_level:"")
+                objUser << UserPermission.find_or_create_by(user_id:user, :s3_id=>params[:s3][:bucket_id],:authorization_level=>"")
             end
             #render plain:objUser.inspect
             if objUser[0].id.present?

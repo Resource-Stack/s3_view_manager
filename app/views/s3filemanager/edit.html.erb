@@ -15,9 +15,50 @@
             <!-- HEADER DESKTOP-->
 
             <!-- MAIN CONTENT-->
+            <%
+                            arrLists=[]
+                            arrLists << "<li class='breadcrumb-item' > <a href='#{bucket_list_path}'><i class='fas fa-home'> Home</i> </a></li>";
+                            if !params[:bucket].nil?
+                                if !params[:key].nil?
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  <a href='#{get_bucket_info_path(params[:bucket])}'>#{params[:bucket]} </a></li>";
+                                else
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  #{params[:bucket]} </li>";
+                                end
+                            end
+                            if !params[:key].nil? &&  !params[:key].empty?
+                                strKeys=params[:key].split('-lb-').first
+                                label=params[:key].split('-lb-').last 
+                                arrKeys=strKeys.split('/')
+                                arrKeys.size
+                                preKeys=''
+                                i=1
+                                arrKeys.each do | key |
+                                preKeys="#{preKeys}#{key}/"
+
+                                keyurl="#{get_bucket_info_path(params[:bucket])}?id=#{preKeys}-lb-#{i.to_i}"
+                                if arrKeys.size!=i
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  <a href='#{keyurl}'>#{key} </a></li>";
+                                else
+                                    arrLists << "<li class='breadcrumb-item' aria-current='page'>  #{key} </li>";
+                                end
+                                i=i+1
+                                end
+
+                                
+                            end
+                
+                        %>
             <div class="main-content">
              <div class="section__content section__content--p30">
                 <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <% arrLists.each do |list|%>
+                                                <%= sanitize list %>
+                                            <%end%>
+                                           <li class='breadcrumb-item' aria-current='page'>  <%= @bucket.name %> </li>
+                                        </ol>
+                                    </nav>
                 <%= form_for :s3, url: bucket_update_path, method: :post do |f|%>
                     <div class="row">
                         <!--<div class="col-sm-12">
@@ -51,11 +92,16 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="fa fa-dot-circle-o"></i> Save
                                 </button>
+                                <a href="<%= bucket_list_path %>"><button type="submit" class="btn btn-secondary btn-sm">
+                                    <i class="fa fa-arrow-left"></i> Back
+                                </button>
+                                </a>
                             </div>
                         </div>
                         
                     </div>
                 <%end%>
+                <%= render "shared/footer" %>
             </div>
             </div>
             </div>
