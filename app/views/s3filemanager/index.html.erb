@@ -38,14 +38,16 @@
                             </div>
                             </div>
                         <% end %>
-                        <!--<div class="table-data__tool">
+                        <% if (current_user.is_admin==true)%>
+                        <div class="table-data__tool">
                                 
                                 <div class="table-data__tool-right">
-                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                        <i class="zmdi zmdi-plus"></i>Add </button>
+                                    <a href="<%= new_s3bucket_url %>"><button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <i class="zmdi zmdi-plus"></i>Add </button> </a>
                                     
                                 </div>
-                        </div>-->
+                        </div>
+                        <% end %>
                         <div class="table-responsive m-b-40">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">

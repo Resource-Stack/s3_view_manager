@@ -96,10 +96,38 @@ class S3filemanagerController < ApplicationController
     end
 
    
+    def create()
+        if params[:s3][:bucket].present?
+            
+            respond_to do |format|
+                response = S3_BUCKET.create_bucket(bucket: params[:s3][:bucket])
+                logger.debug("bucket creation response #{response.inspect}")
+                
+                
+                if response.location.include? params[:s3][:bucket]
+                    @buckets = S3_BUCKET.list_buckets.buckets
+                    #render plain:@buckets.inspect
+                    @buckets.each do |bucket| 
+                        S3Bucket.find_or_create_by(name: bucket.name, :url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+                    end
+                    flash[:notice] = 'Bucket has been successfully created.'
+                    format.html { redirect_to action: "index" }
+                else
+                    flash[:error] = 'Something went wrong!'
+                    format.html { redirect_to action: "index" }
+                end
+                rescue StandardError => e
+                    flash[:error] = e.message
+                    format.html { redirect_to action: "index" }
+            end
+        end
+    end
+    
 
-    def create_bulket()
-        S3_BUCKET.create_bucket(bucket: 'ex-bucket-56564tttdyrt')
-        render plain: S3_BUCKET.inspect 
+
+
+    def new()
+        
     end
 
     def bucket_info()

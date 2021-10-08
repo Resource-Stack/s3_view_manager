@@ -1,0 +1,73 @@
+
+<div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <%= render "shared/mob_header_sidebar" %>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <%= render "shared/sidebar" %>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <%= render "shared/header" %>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            
+            <div class="main-content">
+             <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                           <li class="breadcrumb-item" > <a href='<%= bucket_list_path %>'><i class="fas fa-home"> Home</i></a></li>
+                                           <li class='breadcrumb-item' aria-current='page'> New  </li>
+                                        </ol>
+                                    </nav>
+                <%= form_for :s3, url: create_s3_bucket_path, method: :post do |f|%>
+                    <div class="row">
+                        <!--<div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Folder</label>
+                                
+                                <%= f.text_field :folder ,class: 'form-control' ,placeholder: '' %>
+                            </div>
+                        </div>-->
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Bucket</label>
+                                
+                                <%= f.text_field :bucket ,class: 'form-control' ,placeholder: '' %>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-dot-circle-o"></i> Save
+                                </button>
+                                <a href="<%= bucket_list_path %>"><button type="submit" class="btn btn-secondary btn-sm">
+                                    <i class="fa fa-arrow-left"></i> Back
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                <%end%>
+                <%= render "shared/footer" %>
+            </div>
+            </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+</div>
