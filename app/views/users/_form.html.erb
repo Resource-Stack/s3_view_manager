@@ -15,6 +15,7 @@
     </div>
     <div class="card-body card-block">
       <%= form_for [@user] do |form| %>
+      
         <div class="row form-group">
           <div class="col col-md-3"><label for="text-input" class=" form-control-label">Name </label></div>
           <div class="col-12 col-md-9">
@@ -41,9 +42,21 @@
           <div class="col col-md-3"><label for="email-input" class=" form-control-label">User Type</label></div>
           <div class="col-12 col-md-9">
             <%= form.select(:is_admin, [['Select', ' '],['Admin', true], ['User', false]] ,{},{ :class => 'form-control'} ) %>
-            <small class="help-block form-text">Please enter your password</small>
+            <small class="help-block form-text">Please select user type</small>
           </div>
         </div>
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Config</label></div>
+          <div class="col-12 col-md-9">
+          <%= form.collection_select :s3_config_id, S3Config.all, :id, :account_name , {:include_blank => "Please select"},{:class => 'form-control'}%>
+          
+            <small class="help-block form-text">Please select config</small>
+          </div>
+        </div>
+
+         
+        
+        
         <div class="row form-group">
           <div class="col col-md-3"><label for="email-input" class=" form-control-label">Password</label></div>
           <div class="col-12 col-md-9">

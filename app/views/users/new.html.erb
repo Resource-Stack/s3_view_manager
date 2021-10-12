@@ -73,6 +73,14 @@
           </div>
         </div>
         <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Config</label></div>
+          <div class="col-12 col-md-9">
+          <%= form.collection_select :s3_config_id, S3Config.all, :id, :account_name , {:include_blank => "Please select"},{:class => 'form-control'}%>
+          
+            <small class="help-block form-text">Please select config</small>
+          </div>
+        </div>
+        <div class="row form-group">
           <div class="col col-md-3"><label for="email-input" class=" form-control-label">Password</label></div>
           <div class="col-12 col-md-9">
             <%= form.password_field :password,  class: 'form-control' , placeholder: 'Enter Password'  %>

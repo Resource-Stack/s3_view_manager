@@ -28,6 +28,10 @@ Rails.application.routes.draw do
   
   get '/bucket/edit/:bucket_id', to: 's3filemanager#edit', as: 'bucket_edit'
   post '/bucket/update/', to: 's3filemanager#update', as: 'bucket_update'
+
+
+  get '/profile', to: 'users#profile', as: 'profile'
+  post '/profile_post', to: 'users#profile_post', as: 'profile_post'
   namespace :api do
     get 'folders', to: 's3#folders', as: 'folders'
     get 'files', to: 's3#files', as: 'files'

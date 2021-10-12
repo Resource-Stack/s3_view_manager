@@ -15,11 +15,23 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    @configall= S3Config.where(:status=>1)
+    @config=[]
+    @configall.each do |config|
+        @config<< [config.account_name, config.id]
+    end
+    @selected_config= User.where(id: current_user.id).pluck(:s3_config_id)
     #render plain: @user.inspect
   end
 
   # GET /users/1/edit
   def edit
+    @configall= S3Config.where(:status=>1)
+    @config=[]
+    @configall.each do |config|
+        @config<< [config.account_name, config.id]
+    end
+    @selected_config= User.where(id: current_user.id).pluck(:s3_config_id)
   end
 
   # POST /users
@@ -89,8 +101,24 @@ class UsersController < ApplicationController
                 format.json { head :no_content }
             end 
         end 
+  end
+  def profile
+    @S3Config =S3Config.find(current_user.s3_config_id)
+    #render plain: @user.inspect
+  end
+  def profile_post
+    @S3Config = S3Config.find(params[:id])
+    respond_to do |format|
+      if @S3Config.update(profile_params)
+        flash[:notice] = 'Account has been successfully updated.'
+        format.html { redirect_to action: "profile", id: @S3Config.id}
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { render :edit }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
     end
-
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -100,6 +128,9 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :email, :phone, :password, :password_confirmation, :is_admin)
+      params.require(:user).permit(:name, :email, :phone, :password, :password_confirmation, :is_admin,:s3_config_id)
+    end
+    def profile_params
+      params.require(:S3Config).permit(:access_key, :secret_key, :region, :account_id, :account_name)
     end
 end

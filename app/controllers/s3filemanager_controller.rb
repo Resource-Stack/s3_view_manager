@@ -53,8 +53,8 @@ class S3filemanagerController < ApplicationController
     layout :resolve_layout
     # List of all buckets
     def index
-        
-        @buckets = S3Bucket.all
+        syncS3Bucket()
+        @buckets = S3Bucket.where(:s3_config_id=>current_user.s3_config_id)
         arrBucketids= UserPermission.where(user_id: current_user.id).pluck(:s3_id)
         
         if(current_user.is_admin!=true)
@@ -100,16 +100,12 @@ class S3filemanagerController < ApplicationController
         if params[:s3][:bucket].present?
             
             respond_to do |format|
-                response = S3_BUCKET.create_bucket(bucket: params[:s3][:bucket])
+                response = @S3_Client.create_bucket(bucket: params[:s3][:bucket])
                 logger.debug("bucket creation response #{response.inspect}")
                 
                 
                 if response.location.include? params[:s3][:bucket]
-                    @buckets = S3_BUCKET.list_buckets.buckets
-                    #render plain:@buckets.inspect
-                    @buckets.each do |bucket| 
-                        S3Bucket.find_or_create_by(name: bucket.name, :url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
-                    end
+                    syncS3Bucket()
                     flash[:notice] = 'Bucket has been successfully created.'
                     format.html { redirect_to action: "index" }
                 else
@@ -135,8 +131,8 @@ class S3filemanagerController < ApplicationController
         obj_key=""
         id= params[:id]
         @key=params[:id]
-        bucketObj = Aws::S3::Resource.new.bucket(bucket_name)
-        fileobjects = S3_BUCKET.list_objects_v2(
+        
+        fileobjects = @S3_Client.list_objects_v2(
             bucket: bucket_name,
             max_keys: 90,
             
@@ -203,7 +199,7 @@ class S3filemanagerController < ApplicationController
             bucket=params[:s3][:bucket]
             folder_name=params[:s3][:key]
             doc_anme= "#{params[:s3][:folder]}/"
-            objSuccess=upload_file_to_folder(S3_BUCKET,bucket,folder_name,doc_anme)
+            objSuccess=create_folder(@S3_Client,bucket,folder_name,doc_anme)
             #render plain: objSuccess.inspect
             if objSuccess== true
                 flash[:notice] = "Folder created successfully!"
@@ -226,7 +222,7 @@ class S3filemanagerController < ApplicationController
             bucket=params[:s3][:bucket]
             folder_name=params[:s3][:key]
             
-            objSuccess=upload_file_to_folder(S3_BUCKET,bucket,folder_name,doc_anme)
+            objSuccess=upload_file_to_folder(@S3_Client,bucket,file_header)
            
             if objSuccess== true
                 flash[:notice] = "Document uploaded successfully!"
@@ -248,7 +244,7 @@ class S3filemanagerController < ApplicationController
         permission=checkPermissionAjax(bucket, key,'delete')
 
         if permission['status']==true
-            S3_BUCKET.delete_object({
+            @S3_Client.delete_object({
                 bucket: bucket, 
                 key: key, 
             })
@@ -288,13 +284,23 @@ class S3filemanagerController < ApplicationController
            
 
         end
-        def upload_file_to_folder(s3_client, bucket_name, folder_name, file_name)
+        def create_folder(s3_client, bucket_name, folder_name, file_name)
             s3_client.put_object(
             body: file_name,
             bucket: bucket_name,
             key: folder_name + file_name
             )
             
+            return true
+            rescue StandardError => e
+                return  e.message
+        end
+        def upload_file_to_folder(s3_client, bucket_name, file_header)
+            
+            bucketObj = Aws::S3::Resource.new.bucket(bucket_name)
+            obj = bucketObj.object(file_header.original_filename)
+            # Upload the file
+            obj.put(body: file_header.to_io)
             return true
             rescue StandardError => e
                 return  e.message
@@ -358,6 +364,9 @@ class S3filemanagerController < ApplicationController
              return s3Objects
         end
 
+        def initializeS3Config()
+            
+        end
         
 
 end

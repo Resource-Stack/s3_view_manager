@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-    before_action :authenticate_user!, except: [:bucket_list,:info,:sync_s3_bucket]
+    before_action :authenticate_user!, :init_aws_config, except: [:bucket_list,:info,:sync_s3_bucket]
      # Overwriting the sign_out redirect path method
     def after_sign_out_path_for(resource_or_scope)
         new_user_session_path
@@ -108,5 +108,32 @@ class ApplicationController < ActionController::Base
         return dataRes
     
     end
+    def syncS3Bucket()
+        @buckets = @S3_Client.list_buckets.buckets
+        #render plain:@buckets.inspect
+        @buckets.each do |bucket| 
+            S3Bucket.find_or_create_by(name: bucket.name,:s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+        end
+    end
    
+
+    
+    
+    private
+
+    def init_aws_config
+        if(!current_user.nil?)
+            arrConfig= S3Config.find(current_user.s3_config_id)
+            Aws.config.update({
+                region: 'ap-south-1',
+                credentials: Aws::Credentials.new(arrConfig.access_key, arrConfig.secret_key)
+            })
+            @S3_Client = Aws::S3::Client.new(region: arrConfig.region) 
+            
+            #logger.debug(" arrconfig #{arrConfig.inspect}")
+        end
+    end
+     
+    
+    
 end

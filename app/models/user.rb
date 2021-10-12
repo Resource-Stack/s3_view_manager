@@ -10,9 +10,12 @@ class User < ApplicationRecord
   #validates :phone,   :presence => true,
               #:numericality => true,
               #:length => { :minimum => 10, :maximum => 15 }
-  validates :is_admin, presence: true
+  validates :is_admin, inclusion: { in: [ true, false ] }
+  
   #validates :password,  presence: true, on: :create
  
 
   #has_secure_password
+  #belongs_to :s3_configs
+
 end
