@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-	before_action :set_user, only: [:show, :edit, :update, :destroy,:change_status]
+	before_action :check_admin, :set_user, only: [:show, :edit, :index, :update, :destroy,:change_status]
 	#layout 'admin_custom'
 	# GET /users
   # GET /users.json
@@ -104,7 +104,11 @@ class UsersController < ApplicationController
   end
   def profile
     @S3Config =S3Config.find(current_user.s3_config_id)
-    #render plain: @user.inspect
+    if current_user.is_admin==false
+      flash[:error] = "You are not authrised user!"
+      #return redirect_to bucket_list_path
+      return redirect_back(fallback_location: bucket_list_path)
+    end
   end
   def profile_post
     @S3Config = S3Config.find(params[:id])
@@ -121,16 +125,27 @@ class UsersController < ApplicationController
   end
 
   private
+    
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      if !params[:id].nil?
+        @user = User.find(params[:id])
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :email, :phone, :password, :password_confirmation, :is_admin,:s3_config_id)
+      params.require(:user).permit(:name, :email, :phone, :password, :password_confirmation, :user_group_id,:s3_config_id)
     end
     def profile_params
       params.require(:S3Config).permit(:access_key, :secret_key, :region, :account_id, :account_name)
     end
+    def check_admin
+        
+      if current_user.is_admin==false &&  current_user.user_group_id!=2
+        flash[:error] = "You are not authrised user1!"
+        #return redirect_to bucket_list_path
+        return redirect_to bucket_list_path
+      end
+    end 
 end

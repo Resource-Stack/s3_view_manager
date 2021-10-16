@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :user_groups
   devise_for :users, controllers: { sessions: 'users/sessions' }
   root 'dashboard#index'
   resources :users

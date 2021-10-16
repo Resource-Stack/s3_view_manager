@@ -41,8 +41,8 @@
                         <div class="table-data__tool">
                                 
                                 <div class="table-data__tool-right">
-                                   <a href="<%=new_user_path %>"> <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                        <i class="zmdi zmdi-plus"></i>Add User </button></a>
+                                   <a href="<%=new_user_group_path %>"> <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <i class="zmdi zmdi-plus"></i>Add User Group </button></a>
                                     
                                 </div>
                         </div>
@@ -50,7 +50,7 @@
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
                                             <li class="breadcrumb-item" > <a href='<%= bucket_list_path %>'><i class="fas fa-home"> Home</i></a></li>
-                                           <li class='breadcrumb-item' aria-current='page'> Users  </li>
+                                           <li class='breadcrumb-item' aria-current='page'> User Groups </li>
                                         </ol>
                                     </nav>
                                     <table class="table table-borderless table-data3">
@@ -58,36 +58,23 @@
                                             <tr>
                                             
                                                 <th>Name</th>
-                                                <th>Email</th>
-                                               
-                                                <th>User Type</th>
                                                 <th>Created</th>
                                                 <th>Action</th>
                                                 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                             <% @users.each do |user| %>
+                                             <% @user_groups.each do |user| %>
                                                 <tr>
-                                                    <td><%= user.name %></td>
-                                                    <td><%= user.email %></td>
+                                                    <td><%= user.title %></td>
                                                    
-                                                     <td> <% if !user.user_groups.nil? %> <%= user.user_groups.title %> <% elsif user.is_admin == true %> Super Admin <% end %></td>
                                                     <td><%= user.created_at.strftime('%b %d, %Y') %></td>
                                                     <td class="action">
-                                                    <%= link_to edit_user_path(user), :class => "button" do %>
+                                                    <%= link_to edit_user_group_path(user), :class => "button" do %>
                                                         <button type="button" class="btn btn-block btn-primary btn-sm">Edit</button>
                                                     <% end  %>
-                                                    <% if user.status?%>
-                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
-                                                        <button type="button" class="btn btn-block btn-danger btn-sm">Deactivate</button>
-                                                        <% end %>
-                                                    <% else %>
-                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
-                                                        <button type="button" class="btn btn-block btn-success btn-sm">Activate</button>
-                                                        <% end %>
-                                                    <% end %>
-                                                    <%=button_to "delete", {:controller => :users,
+                                                   
+                                                    <%=button_to "delete", {:controller => :user_groups,
                                                                             :action => 'destroy', :id => user.id }, :class => "btn btn-block btn-danger btn-sm", :method => :delete %>
                                                     </td>
                                                 </tr>

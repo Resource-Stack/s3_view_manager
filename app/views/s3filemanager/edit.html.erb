@@ -80,7 +80,11 @@
                                 
                             </div>
                             <div class="form-group">
-                            <label>Users</label>
+                                <label>User Groups</label>
+                                <%= select_tag 's3[user_groups][]', options_for_select(@user_groups,@selected_user_groups), multiple: true, :class=>'form-control' %>
+                            </div>
+                            <div class="form-group">
+                                <label>Users</label>
                                 <%= select_tag 's3[users][]', options_for_select(@users,@selected_user), multiple: true, :class=>'form-control' %>
                             </div>
                         </div>

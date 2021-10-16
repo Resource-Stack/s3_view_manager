@@ -38,10 +38,18 @@
           </div>
         </div>
         
-        <div class="row form-group">
+        <!--<div class="row form-group">
           <div class="col col-md-3"><label for="email-input" class=" form-control-label">User Type</label></div>
           <div class="col-12 col-md-9">
             <%= form.select(:is_admin, [['Select', ' '],['Admin', true], ['User', false]] ,{},{ :class => 'form-control'} ) %>
+            <small class="help-block form-text">Please select user type</small>
+          </div>
+        </div>-->
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">User Type</label></div>
+          <div class="col-12 col-md-9">
+          <%= form.collection_select :user_group_id, UserGroup.all, :id, :title , {:include_blank => "Please select"},{:class => 'form-control'}%>
+          
             <small class="help-block form-text">Please select user type</small>
           </div>
         </div>

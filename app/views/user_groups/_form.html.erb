@@ -1,0 +1,49 @@
+
+
+<div class="col-lg-12">
+  <% if @user_group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user_group.errors.count, "error") %> prohibited this user group from being saved:</h2>
+      <ul>
+        <% @user_group.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="card">
+    <div class="card-header">
+      <strong> <% if action_name=='new' %> New User Group<% else %> Edit User Group <% end %> </strong>
+    </div>
+    <div class="card-body card-block">
+     <%= form_with(model: @user_group) do |form| %>
+      
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="text-input" class=" form-control-label">Title </label></div>
+          <div class="col-12 col-md-9">
+            <%= form.text_field :title ,class: 'form-control' ,placeholder: 'Enter Title' %>
+            <small class="form-text form-tex">Please enter group title</small>
+          </div>
+        </div>
+        
+        
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Status</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.select(:status, [['Select', ''],['Active', 1], ['Inactive', 0]] ,{},{ :class => 'form-control'} ) %>
+            <small class="help-block form-text">Please select user type</small>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa fa-dot-circle-o"></i> Submit
+          </button>
+          <a href="<%= user_groups_url %>" class="btn btn-secondary btn-sm">
+            <i class="fa  fa-step-backward"></i> Back
+          </a>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

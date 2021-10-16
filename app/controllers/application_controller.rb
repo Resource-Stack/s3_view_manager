@@ -9,10 +9,10 @@ class ApplicationController < ActionController::Base
     end
     def checkPermission(buket_name, obj_key=nil,permission_acc=nil)
         arrBucket=S3Bucket.where(name:buket_name ).first
-        if current_user.is_admin==false
+        if current_user.is_admin==false && current_user.user_group_id!=2
             arrData=  UserPermission.where(user_id: current_user.id,s3_id:arrBucket.id).first
             if arrData.nil?
-                flash[:error] = "You are not authrised user!"
+                flash[:error] = "You are not authrised user1!"
                 #return redirect_to bucket_list_path
                 return redirect_back(fallback_location: bucket_list_path)
             end
@@ -110,10 +110,15 @@ class ApplicationController < ActionController::Base
     end
     def syncS3Bucket()
         @buckets = @S3_Client.list_buckets.buckets
+        
         #render plain:@buckets.inspect
         @buckets.each do |bucket| 
-            S3Bucket.find_or_create_by(name: bucket.name,:s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+            arrRes=S3Bucket.find_by(name: bucket.name)
+            if arrRes.nil? 
+                S3Bucket.create(name: bucket.name, :s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+            end
         end
+        
     end
    
 

@@ -57,39 +57,64 @@ class S3filemanagerController < ApplicationController
         @buckets = S3Bucket.where(:s3_config_id=>current_user.s3_config_id)
         arrBucketids= UserPermission.where(user_id: current_user.id).pluck(:s3_id)
         
-        if(current_user.is_admin!=true)
+        if(current_user.is_admin!=true && current_user.user_group_id!=2)
             @buckets= S3Bucket.where(id: arrBucketids) 
         end
         
-        #render plain: arrBucketids.inspect
+        #render plain: current_user.user_group_id.inspect
     end
     def edit
         @bucket_id=params[:bucket_id]
         @bucket = S3Bucket.find(@bucket_id)
-        @userall= User.where(:is_admin=>0)
+        @userall= User.find_by_sql("SELECT * FROM `users` WHERE user_group_id!=2 and is_admin=0")
         @users=[]
         @userall.each do |user|
             @users<< [user.name, user.id]
         end
-        @selected_user= UserPermission.where(s3_id: @bucket_id).pluck(:user_id)
-        #render plain: @selected_user.inspect
+        @selected_user= UserPermission.where(s3_id: @bucket_id,user_group_id:0).pluck(:user_id)
+        @userallGroups= UserGroup.find_by_sql("SELECT * FROM `user_groups` WHERE id!=2 and status=1")
+        @user_groups=[]
+        @userallGroups.each do |user|
+            @user_groups<< [user.title, user.id]
+        end
+        @selected_user_groups= UserPermission.where(s3_id: @bucket_id).pluck(:user_group_id)
+        #render plain: @user_groups.inspect
     end
     def update
-        if params[:s3][:users].present?
+        if params[:s3][:users].present? || params[:s3][:user_groups].present? 
             #render plain:  params.inspect  
             objUser=[]
+            group_user_ids=[]
             UserPermission.where(:s3_id => params[:s3][:bucket_id]).destroy_all
-            params[:s3][:users].each do | user |
-                objUser << UserPermission.find_or_create_by(user_id:user, :s3_id=>params[:s3][:bucket_id],:authorization_level=>"")
+            if params[:s3][:user_groups].present? 
+                
+                params[:s3][:user_groups].each do | user_group_id |
+                    group_user_ids = User.where(user_group_id: user_group_id).pluck(:id)
+                    group_user_ids.each do | user |
+                        objUser << UserPermission.create(user_id:user, :s3_id=>params[:s3][:bucket_id],:authorization_level=>"",:user_group_id=>user_group_id)
+                    end
+                end
+            end
+           
+            if params[:s3][:users].present?
+                userandUsergroup=(params[:s3][:users]+group_user_ids).uniq
+                params[:s3][:users].each do | user |
+                    objUser << UserPermission.create(user_id:user, :s3_id=>params[:s3][:bucket_id],:authorization_level=>"",:user_group_id=>0)
+=begin                    
+                    resUserpermission=UserPermission.where(:user_id=>user,:s3_id=>params[:s3][:bucket_id]).first
+                    logger.debug("resUserpermission #{resUserpermission.inspect}")
+                    logger.debug("check nil value: #{resUserpermission.nil?}")
+                    if resUserpermission.nil?
+                        objUser << UserPermission.create(user_id:user, :s3_id=>params[:s3][:bucket_id],:authorization_level=>"",:user_group_id=>0)
+                    end
+=end                    
+                end
             end
             #render plain:objUser.inspect
-            if objUser[0].id.present?
+            
                 flash[:notice] = "Bucket updated successfully!"
                 return redirect_to bucket_list_path
-            else
-                flash[:error] = "Not updated successfully!"
-                return redirect_to bucket_list_path
-            end
+          
          
             
         end
@@ -105,7 +130,7 @@ class S3filemanagerController < ApplicationController
                 
                 
                 if response.location.include? params[:s3][:bucket]
-                    syncS3Bucket()
+                    #syncS3Bucket()
                     flash[:notice] = 'Bucket has been successfully created.'
                     format.html { redirect_to action: "index" }
                 else
@@ -161,7 +186,7 @@ class S3filemanagerController < ApplicationController
         @objFileFolder
         @folder_key=id
         @bucket_name=bucket_name
-        checkPermission(bucket_name)
+        #checkPermission(bucket_name)
 
     end
 

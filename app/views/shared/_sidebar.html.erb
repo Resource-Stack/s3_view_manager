@@ -19,10 +19,17 @@
                         <i class="fas fa-shopping-basket"> Amazon S3</i>
                     </a>
                 </li>
-                <% if (current_user.is_admin==true)%>
+                <% if (current_user.is_admin==true || current_user.user_group_id==2)%>
                 <li class="">
                     <a href="<%= users_path %>">
-                        <i class="fas fa-users"> Users</i>
+                        <i class="fas fa-user"> Users</i>
+                    </a>
+                </li>
+                <% end %>
+                <% if (current_user.is_admin==true)%>
+                <li class="">
+                    <a href="<%= user_groups_path %>">
+                        <i class="fas fa-users"> User Groups</i>
                     </a>
                 </li>
                 <% end %>
