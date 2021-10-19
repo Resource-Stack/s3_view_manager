@@ -110,13 +110,6 @@ class ApplicationController < ActionController::Base
     end
     def syncS3Bucket()
         @buckets = @S3_Client.list_buckets.buckets
-        
-        @resp = @S3_Client.get_bucket_tagging({
-              bucket: "bucket-test-12oct", 
-        })
-        #render plain:@resp.tag_set.inspect
-
-
         @buckets.each do |bucket| 
             begin
                 @resp = @S3_Client.get_bucket_tagging({
