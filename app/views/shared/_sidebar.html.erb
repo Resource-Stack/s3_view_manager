@@ -33,6 +33,14 @@
                     </a>
                 </li>
                 <% end %>
+                 <% if (current_user.is_admin==true)%>
+                <li class="">
+                    <a href="<%= s3_configs_path %>">
+                        <i class="fas fa-cog"> S3 Configs</i>
+                    </a>
+                </li>
+                <% end %>
+                
                 
             </ul>
         </nav>

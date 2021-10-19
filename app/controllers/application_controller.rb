@@ -111,12 +111,33 @@ class ApplicationController < ActionController::Base
     def syncS3Bucket()
         @buckets = @S3_Client.list_buckets.buckets
         
-        #render plain:@buckets.inspect
+        @resp = @S3_Client.get_bucket_tagging({
+              bucket: "bucket-test-12oct", 
+        })
+        #render plain:@resp.tag_set.inspect
+
+
         @buckets.each do |bucket| 
-            arrRes=S3Bucket.find_by(name: bucket.name)
-            if arrRes.nil? 
-                S3Bucket.create(name: bucket.name, :s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+            begin
+                @resp = @S3_Client.get_bucket_tagging({
+                    bucket: bucket.name 
+                })
+                
+                if !@resp.nil?
+                    arrtagset=@resp.tag_set[0]
+                    if arrtagset.key=='is_developer'
+                        arrRes=S3Bucket.find_by(name: bucket.name)
+                        if arrRes.nil? 
+                            S3Bucket.create(name: bucket.name, :s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
+                        end
+
+                    end
+                end
+                
+                rescue StandardError
+                    next
             end
+
         end
         
     end

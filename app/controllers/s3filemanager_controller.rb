@@ -126,9 +126,18 @@ class S3filemanagerController < ApplicationController
             
             respond_to do |format|
                 response = @S3_Client.create_bucket(bucket: params[:s3][:bucket])
-                logger.debug("bucket creation response #{response.inspect}")
-                
-                
+                @S3_Client.put_bucket_tagging({
+                    bucket: params[:s3][:bucket],
+                    tagging: {
+                        tag_set: [
+                          {
+                            key: "is_developer", 
+                            value: "true", 
+                          }, 
+                          
+                        ], 
+                      },
+                })
                 if response.location.include? params[:s3][:bucket]
                     #syncS3Bucket()
                     flash[:notice] = 'Bucket has been successfully created.'

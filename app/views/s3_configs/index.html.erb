@@ -41,8 +41,8 @@
                         <div class="table-data__tool">
                                 
                                 <div class="table-data__tool-right">
-                                   <a href="<%=new_user_path %>"> <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                        <i class="zmdi zmdi-plus"></i>Add User </button></a>
+                                   <a href="<%=new_s3_config_path %>"> <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <i class="zmdi zmdi-plus"></i>Add S3 Config </button></a>
                                     
                                 </div>
                         </div>
@@ -50,45 +50,39 @@
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
                                             <li class="breadcrumb-item" > <a href='<%= bucket_list_path %>'><i class="fas fa-home"> Home</i></a></li>
-                                           <li class='breadcrumb-item' aria-current='page'> Users  </li>
+                                           <li class='breadcrumb-item' aria-current='page'> S3 Config </li>
                                         </ol>
                                     </nav>
-                                    <table class="table table-borderless table-data3" id="users_table">
+                                    <table class="table table-borderless table-data3" id="usergroup_table">
                                         <thead>
                                             <tr>
                                             
                                                 <th>Name</th>
-                                                <th>Email</th>
-                                               
-                                                <th>User Type</th>
+                                                <th>Account ID</th>
+                                                <!--<th>Access Key</th>
+                                                <th>Secret Key</th>-->
+                                                <th>Region</th>
                                                 <th>Created</th>
                                                 <th>Action</th>
                                                 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                             <% @users.each do |user| %>
+                                             <% @s3Configs.each do |config| %>
                                                 <tr>
-                                                    <td><%= user.name %></td>
-                                                    <td><%= user.email %></td>
-                                                   
-                                                     <td> <% if !user.user_groups.nil? %> <%= user.user_groups.title %> <% elsif user.is_admin == true %> Super Admin <% end %></td>
-                                                    <td><%= user.created_at.strftime('%b %d, %Y') %></td>
+                                                    <td><%= config.account_name %></td>
+                                                    <td><%= config.account_id %></td>
+                                                    <!--<td><%= config.access_key %></td>
+                                                    <td><%= config.secret_key %></td>-->
+                                                    <td><%= config.region %></td>
+                                                    <td><%= config.created_at.strftime('%b %d, %Y') %></td>
                                                     <td class="action">
-                                                    <%= link_to edit_user_path(user), :class => "button" do %>
+                                                    <%= link_to edit_s3_config_path(config), :class => "button" do %>
                                                         <button type="button" class="btn btn-block btn-primary btn-sm">Edit</button>
                                                     <% end  %>
-                                                    <% if user.status?%>
-                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
-                                                        <button type="button" class="btn btn-block btn-danger btn-sm">Deactivate</button>
-                                                        <% end %>
-                                                    <% else %>
-                                                        <%= link_to  change_status_user_path(user.id), :class => "button" do %>
-                                                        <button type="button" class="btn btn-block btn-success btn-sm">Activate</button>
-                                                        <% end %>
-                                                    <% end %>
-                                                    <%=button_to "delete", {:controller => :users,
-                                                                            :action => 'destroy', :id => user.id }, :class => "btn btn-block btn-danger btn-sm", :method => :delete %>
+                                                   
+                                                    <%=button_to "delete", {:controller => :s3_configs,
+                                                                            :action => 'destroy', :id => config.id }, :class => "btn btn-block btn-danger btn-sm", :method => :delete %>
                                                     </td>
                                                 </tr>
                                             <% end %>
@@ -110,7 +104,7 @@
                         </style>
                         <script>
                             $(function () {
-                            $("#users_table").DataTable({
+                            $("#usergroup_table").DataTable({
                                 "responsive": true, "lengthChange": false, "autoWidth": false,
                             
                             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');

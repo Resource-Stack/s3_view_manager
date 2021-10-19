@@ -55,7 +55,7 @@
                                            
                                         </ol>
                                     </nav>
-                                    <table class="table table-borderless table-data3">
+                                    <table class="table table-borderless table-data3" id="s3_table">
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
@@ -95,6 +95,15 @@
                         
 
                         <%= render "shared/footer" %>
+                        <script>
+                            $(function () {
+                            $("#s3_table").DataTable({
+                                "responsive": true, "lengthChange": false, "autoWidth": false,
+                            
+                            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                            
+                            });
+                        </script>
                     </div>
                 </div>
             </div>

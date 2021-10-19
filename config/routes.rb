@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
   resources :user_groups
+  resources :s3_configs
   devise_for :users, controllers: { sessions: 'users/sessions' }
   root 'dashboard#index'
   resources :users

@@ -53,7 +53,7 @@
                                            <li class='breadcrumb-item' aria-current='page'> User Groups </li>
                                         </ol>
                                     </nav>
-                                    <table class="table table-borderless table-data3">
+                                    <table class="table table-borderless table-data3" id="usergroup_table">
                                         <thead>
                                             <tr>
                                             
@@ -97,7 +97,7 @@
                         </style>
                         <script>
                             $(function () {
-                            $("#users_table").DataTable({
+                            $("#usergroup_table").DataTable({
                                 "responsive": true, "lengthChange": false, "autoWidth": false,
                             
                             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');

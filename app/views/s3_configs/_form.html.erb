@@ -1,0 +1,77 @@
+
+
+<div class="col-lg-12">
+  <% if @s3config.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@s3config.errors.count, "error") %> prohibited this user group from being saved:</h2>
+      <ul>
+        <% @s3config.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="card">
+    <div class="card-header">
+      <strong> <% if action_name=='new' %> New S3 Config<% else %> Edit S3 Config <% end %> </strong>
+    </div>
+    <div class="card-body card-block">
+     <%= form_with(model: @s3config) do |form| %>
+      
+        <div class="row form-group">
+        <div class="col col-md-3"><label for="text-input" class=" form-control-label">Name </label></div>
+        <div class="col-12 col-md-9">
+            <%= form.text_field :account_name ,class: 'form-control' ,placeholder: 'Enter Name' %>
+            <small class="form-text form-tex">Please enter account name</small>
+        </div>
+        </div>
+        <div class="row form-group">
+        <div class="col col-md-3"><label for="email-input" class=" form-control-label">	Account ID</label></div>
+        <div class="col-12 col-md-9">
+            <%= form.text_field :account_id,class: 'form-control' , placeholder: 'Enter Account ID'  %>
+            <small class="help-block form-text">Please enter account id</small>
+        </div>
+        </div>
+        <div class="row form-group">
+            <div class="col col-md-3"><label for="email-input" class=" form-control-label">Access key</label></div>
+            <div class="col-12 col-md-9">
+                <%= form.text_field :access_key, class: 'form-control' , placeholder: 'Enter Access key'  %>
+                <small class="help-block form-text">Please enter the access key</small>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col col-md-3"><label for="email-input" class=" form-control-label">Secret key</label></div>
+            <div class="col-12 col-md-9">
+                <%= form.text_field :secret_key, class: 'form-control' , placeholder: 'Enter Secret key'  %>
+                <small class="help-block form-text">Please enter the secret key</small>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col col-md-3"><label for="email-input" class=" form-control-label">Region</label></div>
+            <div class="col-12 col-md-9">
+                <%= form.text_field :region, class: 'form-control' , placeholder: 'Enter Region'  %>
+                <small class="help-block form-text">Please enter the region</small>
+            </div>
+        </div>
+        
+        
+        <div class="row form-group">
+          <div class="col col-md-3"><label for="email-input" class=" form-control-label">Status</label></div>
+          <div class="col-12 col-md-9">
+            <%= form.select(:status, [['Select', ''],['Active', 1], ['Inactive', 0]] ,{},{ :class => 'form-control'} ) %>
+            <small class="help-block form-text">Please select user type</small>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa fa-dot-circle-o"></i> Submit
+          </button>
+          <a href="<%= user_groups_url %>" class="btn btn-secondary btn-sm">
+            <i class="fa  fa-step-backward"></i> Back
+          </a>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
