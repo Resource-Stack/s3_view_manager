@@ -117,8 +117,8 @@ class ApplicationController < ActionController::Base
                 })
                 
                 if !@resp.nil?
-                    arrtagset=@resp.tag_set[0]
-                    if arrtagset.key=='is_developer'
+                    hastagset=@resp.tag_set
+                    if hastagset.key?("is_developer")
                         arrRes=S3Bucket.find_by(name: bucket.name)
                         if arrRes.nil? 
                             S3Bucket.create(name: bucket.name, :s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
