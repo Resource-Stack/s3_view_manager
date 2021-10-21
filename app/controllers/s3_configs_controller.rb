@@ -87,6 +87,7 @@ class S3ConfigsController < ApplicationController
   end
   
   def update
+    #render plain: profile_params.inspect
     respond_to do |format|
       if @s3config.update(profile_params)
         flash[:notice] ="Account has been successfully updated." 
@@ -107,7 +108,7 @@ class S3ConfigsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def profile_params
-      params.require(:s3_config).permit(:access_key, :secret_key, :region, :account_id, :account_name,:status)
+      params.require(:s3_config).permit(:access_key, :secret_key, :region, :account_id, :account_name, :status, :filter_tag)
     end
     def check_admin
         

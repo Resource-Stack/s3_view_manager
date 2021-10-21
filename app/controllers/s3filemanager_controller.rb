@@ -122,6 +122,7 @@ class S3filemanagerController < ApplicationController
 
    
     def create()
+        
         if params[:s3][:bucket].present?
             
             respond_to do |format|
@@ -131,7 +132,7 @@ class S3filemanagerController < ApplicationController
                     tagging: {
                         tag_set: [
                           {
-                            key: "is_developer", 
+                            key: @filter_tag, 
                             value: "true", 
                           }, 
                           

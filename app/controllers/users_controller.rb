@@ -138,7 +138,7 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :phone, :password, :password_confirmation, :user_group_id,:s3_config_id)
     end
     def profile_params
-      params.require(:S3Config).permit(:access_key, :secret_key, :region, :account_id, :account_name)
+      params.require(:S3Config).permit(:access_key, :secret_key, :region, :account_id, :account_name,:filter_tag)
     end
     def check_admin
         

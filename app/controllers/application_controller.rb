@@ -110,15 +110,19 @@ class ApplicationController < ActionController::Base
     end
     def syncS3Bucket()
         @buckets = @S3_Client.list_buckets.buckets
+        logger.debug("fetch buckets from s3 account #{@buckets}")
         @buckets.each do |bucket| 
             begin
                 @resp = @S3_Client.get_bucket_tagging({
                     bucket: bucket.name 
                 })
+                logger.debug("fetch tags from s3 account #{@resp}")
                 
                 if !@resp.nil?
                     hastagset=@resp.tag_set
-                    if hastagset.key?("is_developer")
+                    logger.debug("hastagset #{@hastagset}")
+                    if !(hastagset.find {|x| x[:key] == @filter_tag}).nil?
+                        logger.debug("inside the condition hastagset #{@hastagset}")
                         arrRes=S3Bucket.find_by(name: bucket.name)
                         if arrRes.nil? 
                             S3Bucket.create(name: bucket.name, :s3_config_id=>current_user.s3_config_id ,:url=>bucket.name,  :status=>1,:creation_date=>bucket.creation_date)
@@ -149,6 +153,8 @@ class ApplicationController < ActionController::Base
             })
             @S3_Client = Aws::S3::Client.new(region: arrConfig.region) 
             
+            @S3Config =S3Config.find(current_user.s3_config_id)
+            @filter_tag= @S3Config.filter_tag
             #logger.debug(" arrconfig #{arrConfig.inspect}")
         end
     end
