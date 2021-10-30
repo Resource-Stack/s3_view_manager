@@ -45,12 +45,13 @@ ActiveRecord::Schema.define(version: 2021_10_16_081926) do
     t.string "account_id", limit: 500, null: false
     t.string "account_name", limit: 500, null: false
     t.integer "status", null: false
+    t.string "filter_tag", limit: 500, null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "user_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "tittle"
+    t.string "title"
     t.integer "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

@@ -146,15 +146,17 @@ class ApplicationController < ActionController::Base
 
     def init_aws_config
         if(!current_user.nil?)
-            arrConfig= S3Config.find(current_user.s3_config_id)
-            Aws.config.update({
-                region: 'ap-south-1',
-                credentials: Aws::Credentials.new(arrConfig.access_key, arrConfig.secret_key)
-            })
-            @S3_Client = Aws::S3::Client.new(region: arrConfig.region) 
-            
-            @S3Config =S3Config.find(current_user.s3_config_id)
-            @filter_tag= @S3Config.filter_tag
+            if(!current_user.s3_config_id.nil?)
+                arrConfig= S3Config.find(current_user.s3_config_id)
+                Aws.config.update({
+                    region: 'ap-south-1',
+                    credentials: Aws::Credentials.new(arrConfig.access_key, arrConfig.secret_key)
+                })
+                @S3_Client = Aws::S3::Client.new(region: arrConfig.region) 
+                
+                @S3Config =S3Config.find(current_user.s3_config_id)
+                @filter_tag= @S3Config.filter_tag
+            end
             #logger.debug(" arrconfig #{arrConfig.inspect}")
         end
     end

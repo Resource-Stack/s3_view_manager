@@ -53,7 +53,10 @@ class S3filemanagerController < ApplicationController
     layout :resolve_layout
     # List of all buckets
     def index
-        syncS3Bucket()
+        if !current_user.s3_config_id.nil?
+            syncS3Bucket()
+        end
+        
         @buckets = S3Bucket.where(:s3_config_id=>current_user.s3_config_id)
         arrBucketids= UserPermission.where(user_id: current_user.id).pluck(:s3_id)
         
